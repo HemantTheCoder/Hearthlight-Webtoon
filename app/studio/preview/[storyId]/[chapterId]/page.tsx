@@ -4,21 +4,18 @@ import { useStudioStore } from "@/lib/useStudioStore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
-import { Story, Chapter, DialogueNode, CharacterExt } from "@/types/story";
+import { Story, Chapter, DialogueNode, Character } from "@/types/story";
 import { SceneNode, StudioCharacter, StudioChapter, StudioDraft } from "@/types/studio";
-import VNMode from "@/components/reader/VNMode";
+import VNMode from "../../../../../components/reader/VNMode";
 import WebtoonReader from "@/components/reader/WebtoonReader";
 
 // Map Studio Draft shape to Static Reader shape
 function adaptDraftToStory(draft: StudioDraft, chapter: StudioChapter): { story: Story, chapter: Chapter } {
   // Convert characters
-  const characters: CharacterExt[] = draft.characters.map(c => ({
+  const characters: Character[] = draft.characters.map(c => ({
     id: c.id,
     name: c.name,
-    expressions: Object.entries(c.expressions).map(([mood, url]) => ({
-      mood,
-      imageUrl: url || "https://placehold.co/400x800/1a1a2e/8b5cf6?text=Missing+Sprite" // Fallback
-    }))
+    palette: c.id,
   }));
 
   // Convert Nodes to DialogueNodes
@@ -26,18 +23,21 @@ function adaptDraftToStory(draft: StudioDraft, chapter: StudioChapter): { story:
     
     const mapped: DialogueNode = {
       id: n.id,
+      type: n.type as any,
       text: n.text,
       speaker: n.speaker,
-      backgroundUrl: n.background && !n.background.includes('/') 
-        ? `/assets/bg_${n.background}.png` // lazy mapping for demo
-        : n.background || `/assets/bg_cafe_night.png`, // Default
+      background: n.background && !n.background.includes('/') 
+        ? `${n.background}` // lazy mapping for demo
+        : n.background || `cafe_night`, // Default
       cinematicImage: n.cinematicImage,
+      webtoonPanel: n.webtoonPanel ? { type: "wide", caption: n.webtoonPanel.caption } : undefined
     };
 
     if (n.type === "choice" && n.choices) {
-      mapped.options = n.choices.map(c => ({
+      mapped.choices = n.choices.map(c => ({
+        id: c.id || c.text,
         text: c.text,
-        nextId: c.next
+        next: c.next || ""
       }));
     }
 
@@ -45,16 +45,13 @@ function adaptDraftToStory(draft: StudioDraft, chapter: StudioChapter): { story:
       const charInfo = n.characters[0];
       const foundChar = characters.find(c => c.id === charInfo.characterId);
       if (foundChar) {
-        mapped.character = foundChar.name;
-        mapped.expression = charInfo.expression;
+        mapped.characters = [{
+          characterId: foundChar.id,
+          expression: charInfo.expression as any,
+          position: charInfo.position as any,
+          highlighted: true
+        }];
       }
-    }
-
-    // Connect node sequence if not a choice
-    if (n.type !== "choice") {
-       // Our studio node array is mostly linear. 
-       // The VN logic uses options if it ends, or automatically increments array index if we don't return early.
-       // For this simple mock, we'll let VNMode array-sequence handle it unless there's an explicit Next ID via choices.
     }
 
     return mapped;
@@ -63,15 +60,21 @@ function adaptDraftToStory(draft: StudioDraft, chapter: StudioChapter): { story:
   const adaptedStory: Story = {
     id: draft.id,
     title: draft.title,
-    coverUrl: draft.coverImage || "",
-    genre: "Studio Preview",
+    author: draft.author || "Creator",
+    coverImage: draft.coverImage || "",
+    genre: ["Studio Preview"],
+    tags: draft.tags || [],
     synopsis: draft.synopsis,
     characters: characters,
-    chapters: []
+    chapters: [],
+    isComplete: false
   };
 
   const adaptedChapter: Chapter = {
     id: chapter.id,
+    number: chapter.number,
+    readTimeMinutes: chapter.readTimeMinutes,
+    isLocked: false,
     title: chapter.title,
     nodes: dialogueNodes
   };
@@ -86,6 +89,7 @@ export default function PreviewEngine() {
   
   const [mounted, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState<"webtoon" | "vn">("vn");
+  const [nodeIndex, setNodeIndex] = useState(0);
 
   useEffect(() => {
     setMounted(true);
@@ -111,6 +115,38 @@ export default function PreviewEngine() {
        </div>
      );
   }
+
+  const currentNode = mockChapter.nodes[nodeIndex];
+
+  const goNext = () => {
+    const nextNodeId = currentNode.next;
+    if (nextNodeId === "chapter_end") {
+      alert("Preview Chapter Complete");
+      return;
+    }
+    if (nextNodeId) {
+      const targetIndex = mockChapter.nodes.findIndex((n) => n.id === nextNodeId);
+      if (targetIndex !== -1) {
+        setNodeIndex(targetIndex);
+        return;
+      }
+    }
+    if (nodeIndex < mockChapter.nodes.length - 1) {
+      setNodeIndex(nodeIndex + 1);
+    } else {
+      alert("Preview Chapter Complete");
+    }
+  };
+
+  const handleChoice = (choice: any) => {
+    if (choice.next === "chapter_end") {
+      alert("Preview Chapter Complete");
+      return;
+    }
+    const targetIdx = mockChapter.nodes.findIndex((n) => n.id === choice.next);
+    if (targetIdx !== -1) setNodeIndex(targetIdx);
+    else goNext();
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
@@ -139,19 +175,48 @@ export default function PreviewEngine() {
         </div>
       </div>
 
-      {viewMode === "vn" ? (
-        <VNMode 
-          story={mockStory} 
-          chapter={mockChapter} 
-          onComplete={() => alert("Preview Chapter Complete")} 
-        />
-      ) : (
-        <WebtoonReader 
-          story={mockStory} 
-          chapter={mockChapter} 
-          onComplete={() => alert("Preview Chapter Complete")} 
-        />
-      )}
+      <div className="relative flex-1 flex flex-col overflow-hidden">
+        {viewMode === "vn" ? (
+          <VNMode 
+            story={mockStory} 
+            currentNode={currentNode}
+            onNext={goNext}
+            onChoice={handleChoice}
+          />
+        ) : (
+          <div className="flex-1 overflow-y-auto">
+            <WebtoonReader 
+              nodes={mockChapter.nodes} 
+              currentNodeIndex={nodeIndex} 
+              onScrollToChoice={() => {}} 
+            />
+            {currentNode?.type !== "choice" && currentNode?.type !== "panel" && (
+              <button onClick={goNext} className="w-full py-4 flex items-center justify-center gap-2 mt-1" style={{ color: "#9f7aea" }}>
+                <span className="text-sm">Tap to continue ↓</span>
+              </button>
+            )}
+            {currentNode?.type === "panel" && (
+              <button onClick={goNext} className="w-full py-3 flex items-center justify-center" style={{ color: "#9f7aea" }}>
+                <span className="text-sm">Continue ↓</span>
+              </button>
+            )}
+            {currentNode?.type === "choice" && currentNode.choices && (
+              <div className="px-4 py-4 flex flex-col gap-3">
+                <p className="text-sm font-semibold text-center mb-1 text-white">
+                  {currentNode.text}
+                </p>
+                {currentNode.choices.map((choice) => (
+                  <button key={choice.id} onClick={() => handleChoice(choice)}
+                    className="w-full py-3.5 rounded-2xl text-sm font-medium bg-white text-black"
+                  >
+                    {choice.text}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

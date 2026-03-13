@@ -59,11 +59,13 @@ export default function HomePage() {
       ? combinedStories
       : activeGenre === "Indie"
       ? publishedIndieStories
-      : combinedStories.filter((s) =>
-          Array.isArray(s.genre)
-            ? s.genre.some((g) => g.toLowerCase().includes(activeGenre.toLowerCase()))
-            : s.genre?.toLowerCase().includes(activeGenre.toLowerCase())
-        );
+      : combinedStories.filter((s) => {
+          if (!s.genre) return false;
+          if (Array.isArray(s.genre)) {
+            return s.genre.some((g) => String(g).toLowerCase().includes(activeGenre.toLowerCase()));
+          }
+          return String(s.genre).toLowerCase().includes(activeGenre.toLowerCase());
+        });
 
   return (
     <div

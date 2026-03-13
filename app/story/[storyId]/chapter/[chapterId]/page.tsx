@@ -16,7 +16,7 @@ import WebtoonReader from "@/components/reader/WebtoonReader";
 import ChapterComplete from "@/components/reader/ChapterComplete";
 import SceneBackground from "@/components/reader/SceneBackground";
 import AmbientEffect from "@/components/reader/AmbientEffect";
-import VNMode from "@/components/reader/VNMode";
+import VNMode from "../../../../../components/reader/VNMode";
 import { notFound } from "next/navigation";
 
 interface PageParams {
