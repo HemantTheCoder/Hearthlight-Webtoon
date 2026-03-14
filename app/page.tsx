@@ -67,6 +67,8 @@ export default function HomePage() {
           return String(s.genre).toLowerCase().includes(activeGenre.toLowerCase());
         });
 
+  const comingSoonStories = combinedStories.filter((s) => s.isComingSoon);
+
   return (
     <div
       className="flex flex-col"
@@ -215,10 +217,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* All / Filtered Stories */}
-      const comingSoonStories = combinedStories.filter(s => s.isComingSoon);
-
-      return (
         <div className="mb-6">
           <div className="px-5">
             <SectionHeader
@@ -227,9 +225,11 @@ export default function HomePage() {
             />
           </div>
           <div className="flex gap-3 overflow-x-auto px-5 pb-2 no-scrollbar">
-            {filtered.filter(s => !s.isComingSoon).map((story, i) => (
-              <StoryCard key={story.id} story={story} index={i} variant="medium" />
-            ))}
+            {filtered
+              .filter((s) => !s.isComingSoon)
+              .map((story, i) => (
+                <StoryCard key={story.id} story={story} index={i} variant="medium" />
+              ))}
           </div>
         </div>
 
