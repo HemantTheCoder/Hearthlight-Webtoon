@@ -1,6 +1,7 @@
 export type StoryStatus = "draft" | "preview" | "published";
 export type NodeMood = "neutral" | "happy" | "sad" | "surprised" | "flustered" | "shy" | "thinking";
 export type Position = "left" | "center" | "right";
+export type SceneEffect = "rain" | "snow" | "bokeh" | "particles" | "none";
 export type NodeType = "narration" | "dialogue" | "panel" | "choice";
 
 export interface StudioCharacter {
@@ -25,7 +26,7 @@ export interface SceneNode {
   type: NodeType;
   text: string;
   background?: string;
-  sceneEffect?: "rain" | "bokeh" | "particles" | "none";
+  sceneEffect?: SceneEffect;
   speaker?: string;
   characterId?: string;
   
@@ -48,6 +49,7 @@ export interface SceneNode {
   };
   
   next?: string; // The ID of the next node (if linear)
+  isThought?: boolean; // For narration/dialogue italics
 }
 
 export interface StudioChapter {

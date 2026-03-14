@@ -98,22 +98,22 @@ export default function CharacterManager({ draft }: { draft: StudioDraft }) {
 
               <div className="flex flex-col gap-2">
                  <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider">Expressions (Asset Paths)</p>
-                 <div className="grid grid-cols-2 gap-2">
-                   {["neutral", "happy", "sad", "surprised"].map(expr => (
-                     <div key={expr} className="flex flex-col gap-1">
-                       <label className="text-[10px] text-white/50">{expr}</label>
-                       <input 
-                         type="text"
-                         value={char.expressions[expr] || ""}
-                         onChange={(e) => updateCharacter(draft.id, char.id, { 
-                           expressions: { ...char.expressions, [expr]: e.target.value } 
-                         })}
-                         placeholder={`/assets/chars/${char.name.toLowerCase()}_${expr}.png`}
-                         className="bg-black/40 border border-white/5 rounded px-2 py-1 text-xs outline-none focus:border-purple-500/50"
-                       />
-                     </div>
-                   ))}
-                 </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["neutral", "happy", "sad", "surprised", "flustered", "shy", "thinking", "excited"].map(expr => (
+                      <div key={expr} className="flex flex-col gap-1">
+                        <label className="text-[10px] text-white/50">{expr}</label>
+                        <input 
+                          type="text"
+                          value={char.expressions[expr] || ""}
+                          onChange={(e) => updateCharacter(draft.id, char.id, { 
+                            expressions: { ...char.expressions, [expr]: e.target.value } 
+                          })}
+                          placeholder={`/assets/chars/${char.name.toLowerCase()}_${expr}.png`}
+                          className="bg-black/40 border border-white/5 rounded px-2 py-1 text-xs outline-none focus:border-purple-500/50"
+                        />
+                      </div>
+                    ))}
+                  </div>
               </div>
             </div>
           ))}

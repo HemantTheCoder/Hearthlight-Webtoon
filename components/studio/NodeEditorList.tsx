@@ -47,60 +47,160 @@ export default function NodeEditorList({ draft, chapter }: { draft: StudioDraft,
             {/* Editor Fields based on Type */}
             <div className="flex flex-col gap-3">
               
-              {/* Common: Background Field */}
-              <div className="flex items-center gap-2">
-                <label className="text-xs text-white/50 w-24">Background:</label>
-                <input 
-                  type="text" 
-                  value={node.background || ""}
-                  onChange={(e) => updateNode(draft.id, chapter.id, node.id, { background: e.target.value })}
-                  placeholder="e.g. classroom, rooftop"
-                  className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none focus:border-purple-500/50"
-                />
-              </div>
-
-              {/* Dialogue specific: Speaker & Character ID */}
-              {node.type === "dialogue" && (
+              {/* Common: Background & Effect Fields */}
+              <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-white/50 w-24">Speaker:</label>
+                  <label className="text-xs text-white/50 w-24">Background:</label>
                   <input 
                     type="text" 
-                    value={node.speaker || ""}
-                    onChange={(e) => updateNode(draft.id, chapter.id, node.id, { speaker: e.target.value })}
-                    placeholder="Display Name"
-                    className="w-1/3 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none"
+                    value={node.background || ""}
+                    onChange={(e) => updateNode(draft.id, chapter.id, node.id, { background: e.target.value })}
+                    placeholder="e.g. classroom"
+                    className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none focus:border-purple-500/50"
                   />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs text-white/50 w-24">Effect:</label>
                   <select
                     className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none text-white/80"
-                    value={node.characters?.[0]?.characterId || ""}
-                    onChange={(e) => {
-                      const charId = e.target.value;
-                      if (!charId) {
-                        updateNode(draft.id, chapter.id, node.id, { characters: [] });
-                        return;
-                      }
-                      updateNode(draft.id, chapter.id, node.id, {
-                        characters: [{ characterId: charId, expression: "neutral", position: "center", highlighted: true }]
-                      });
-                    }}
+                    value={node.sceneEffect || "none"}
+                    onChange={(e) => updateNode(draft.id, chapter.id, node.id, { sceneEffect: e.target.value as any })}
                   >
-                    <option value="">No Sprite...</option>
-                    {draft.characters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    <option value="none">No Effect</option>
+                    <option value="rain">Rain 🌧️</option>
+                    <option value="snow">Snow ❄️</option>
+                    <option value="bokeh">Bokeh ✨</option>
+                    <option value="particles">Fireflies/Dust 🎇</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Dialogue specific: Speaker, Character, Position, Expression & Thought Toggle */}
+              {node.type === "dialogue" && (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-white/50 w-24">Speaker:</label>
+                    <div className="flex flex-1 gap-2">
+                      <input 
+                        type="text" 
+                        value={node.speaker || ""}
+                        onChange={(e) => updateNode(draft.id, chapter.id, node.id, { speaker: e.target.value })}
+                        placeholder="Display Name"
+                        className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none"
+                      />
+                      <label className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/40 border border-white/5 cursor-pointer hover:bg-white/5 transition-colors">
+                        <input 
+                          type="checkbox" 
+                          checked={node.isThought || false}
+                          onChange={(e) => updateNode(draft.id, chapter.id, node.id, { isThought: e.target.checked })}
+                          className="w-3 h-3 rounded bg-purple-500"
+                        />
+                        <span className="text-[10px] uppercase font-bold text-white/40">Thought Mode</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-white/50 w-24">Character:</label>
+                    <div className="flex flex-1 gap-2">
+                      <select
+                        className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none text-white/80"
+                        value={node.characters?.[0]?.characterId || ""}
+                        onChange={(e) => {
+                          const charId = e.target.value;
+                          if (!charId) {
+                            updateNode(draft.id, chapter.id, node.id, { characters: [] });
+                            return;
+                          }
+                          const existing = node.characters?.[0] || { position: "center", expression: "neutral", highlighted: true };
+                          updateNode(draft.id, chapter.id, node.id, {
+                            characters: [{ ...existing, characterId: charId }]
+                          });
+                        }}
+                      >
+                        <option value="">No Sprite...</option>
+                        {draft.characters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      </select>
+
+                      {node.characters?.[0] && (
+                        <>
+                          <select
+                            className="w-24 bg-black/40 border border-white/5 rounded px-2 py-1.5 text-xs outline-none text-white/60"
+                            value={node.characters[0].position}
+                            onChange={(e) => {
+                              const chars = [...(node.characters || [])];
+                              chars[0].position = e.target.value as any;
+                              updateNode(draft.id, chapter.id, node.id, { characters: chars });
+                            }}
+                          >
+                            <option value="left">Left</option>
+                            <option value="center">Center</option>
+                            <option value="right">Right</option>
+                          </select>
+                          <select
+                            className="w-28 bg-black/40 border border-white/5 rounded px-2 py-1.5 text-xs outline-none text-white/60"
+                            value={node.characters[0].expression}
+                            onChange={(e) => {
+                              const chars = [...(node.characters || [])];
+                              chars[0].expression = e.target.value;
+                              updateNode(draft.id, chapter.id, node.id, { characters: chars });
+                            }}
+                          >
+                            <option value="neutral">Neutral</option>
+                            <option value="happy">Happy</option>
+                            <option value="sad">Sad</option>
+                            <option value="surprised">Surprised</option>
+                            <option value="flustered">Flustered</option>
+                            <option value="shy">Shy</option>
+                            <option value="thinking">Thinking</option>
+                            <option value="excited">Excited</option>
+                          </select>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Cinematic Image Field (For Panels) */}
+              {/* Cinematic Panel specific: Image, Type & Caption */}
               {node.type === "panel" && (
-                <div className="flex items-center gap-2">
-                  <label className="text-xs text-white/50 w-24">Image Asset:</label>
-                  <input 
-                    type="text" 
-                    value={node.cinematicImage || ""}
-                    onChange={(e) => updateNode(draft.id, chapter.id, node.id, { cinematicImage: e.target.value })}
-                    placeholder="/assets/panels/my_art.png"
-                    className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none focus:border-purple-500/50"
-                  />
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-white/50 w-24">Image Asset:</label>
+                    <input 
+                      type="text" 
+                      value={node.cinematicImage || ""}
+                      onChange={(e) => updateNode(draft.id, chapter.id, node.id, { cinematicImage: e.target.value })}
+                      placeholder="e.g. coffee, eye, crane"
+                      className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none focus:border-purple-500/50"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-white/50 w-24">Panel Style:</label>
+                    <div className="flex flex-1 gap-2">
+                      <select
+                        className="w-32 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none text-white/80"
+                        value={node.webtoonPanel?.type || "wide"}
+                        onChange={(e) => updateNode(draft.id, chapter.id, node.id, { 
+                          webtoonPanel: { type: e.target.value as any, caption: node.webtoonPanel?.caption || "" } 
+                        })}
+                      >
+                        <option value="wide">Wide Screen</option>
+                        <option value="half">Half Panel</option>
+                        <option value="close">Close-up</option>
+                        <option value="full">Full Page</option>
+                      </select>
+                      <input 
+                        type="text" 
+                        value={node.webtoonPanel?.caption || ""}
+                        onChange={(e) => updateNode(draft.id, chapter.id, node.id, { 
+                          webtoonPanel: { ...(node.webtoonPanel || {}), caption: e.target.value } 
+                        })}
+                        placeholder="Optional Caption (e.g. 'Later that night...')"
+                        className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none focus:border-purple-500/50"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
 
