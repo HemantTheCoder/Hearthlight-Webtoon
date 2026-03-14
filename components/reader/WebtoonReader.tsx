@@ -13,12 +13,14 @@ const PANEL_IMAGES: Record<string, string> = {
   coffee: "/assets/panels/panel_coffee.png",
   eye: "/assets/panels/panel_eye.png",
   crane: "/assets/panels/panel_crane.png",
+  rooftop_look: "/assets/bgs/bg_rooftop_night.png", // Fallback for missing cinematic
 };
 
 const CHAR_IMAGES: Record<string, string> = {
   eleanor: "/assets/chars/eleanor_neutral.png",
   aoi: "/assets/chars/aoi_neutral.png",
   hana: "/assets/chars/hana_neutral.png",
+  "hana_shy": "/assets/chars/hana_neutral.png", // Fallback for missing asset
 };
 
 const PANEL_HEIGHTS: Record<string, string> = {

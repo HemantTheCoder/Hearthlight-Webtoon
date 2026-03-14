@@ -98,6 +98,15 @@ export const STORIES: Story[] = [
             characters: [
               { characterId: "eleanor", expression: "shy", position: "center", highlighted: true },
             ],
+            next: "n7_cinematic",
+          },
+          {
+            id: "n7_cinematic",
+            type: "panel",
+            text: "She looks at the stars, but for a moment, her reflection in the window matches the intensity of the constellations above.",
+            background: "rooftop_night",
+            cinematicImage: "eye",
+            webtoonPanel: { type: "close", caption: "Reflection" },
             next: "n8",
           },
           {
@@ -254,6 +263,15 @@ export const STORIES: Story[] = [
             characters: [
               { characterId: "eleanor", expression: "neutral", position: "center", highlighted: true },
             ],
+            next: "n13_cinematic",
+          },
+          {
+            id: "n13_cinematic",
+            type: "panel",
+            text: "A strand of her hair catches in the wind, dancing against the backdrop of a thousand city lights.",
+            background: "rooftop_night",
+            cinematicImage: "rooftop_look",
+            webtoonPanel: { type: "wide", caption: "City Wind" },
             next: "n14",
           },
           {
@@ -347,6 +365,15 @@ export const STORIES: Story[] = [
             background: "train_station",
             sceneEffect: "rain",
             webtoonPanel: { type: "half", caption: "5 years." },
+            next: "n3_cinematic",
+          },
+          {
+            id: "n3_cinematic",
+            type: "panel",
+            text: "Raindrops cling to the edge of her umbrella, each one reflecting the dim station lights like a tiny, frozen memory.",
+            background: "train_station",
+            cinematicImage: "coffee", // Using coffee as a placeholder for a 'liquid/reflective' vibe
+            webtoonPanel: { type: "close", caption: "Stillness" },
             next: "n4",
           },
           {
@@ -469,6 +496,15 @@ export const STORIES: Story[] = [
             background: "train_station",
             sceneEffect: "rain",
             webtoonPanel: { type: "wide", caption: "Next Stop: Shinjuku" },
+            next: "n10_cinematic",
+          },
+          {
+            id: "n10_cinematic",
+            type: "panel",
+            text: "Through the rain-streaked window, your reflections overlap for a moment — two ghosts from a summer that never quite ended.",
+            background: "train_station",
+            cinematicImage: "eye",
+            webtoonPanel: { type: "close", caption: "Reflections" },
             next: "chapter_end",
           },
           {
@@ -540,6 +576,15 @@ export const STORIES: Story[] = [
             text: "Careful creases. Crisp white paper. No signature. Naturally.",
             background: "classroom",
             sceneEffect: "bokeh",
+            next: "n4_cinematic",
+          },
+          {
+            id: "n4_cinematic",
+            type: "panel",
+            text: "You run a finger over the sharp fold of the wing. It feels... intentional. Warm, even.",
+            background: "classroom",
+            cinematicImage: "crane",
+            webtoonPanel: { type: "close", caption: "Fine Detail" },
             next: "n5",
           },
           {
@@ -651,6 +696,15 @@ export const STORIES: Story[] = [
             characters: [
               { characterId: "hana", expression: "shy", position: "right", highlighted: true },
             ],
+            next: "n11_cinematic",
+          },
+          {
+            id: "n11_cinematic",
+            type: "panel",
+            text: "She quickly looks away, a small, hidden smile tugging at the corner of her mouth.",
+            background: "classroom",
+            cinematicImage: "eye",
+            webtoonPanel: { type: "close", caption: "Caught" },
             next: "chapter_end",
           },
           {

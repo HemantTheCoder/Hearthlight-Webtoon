@@ -5,6 +5,13 @@ import { DialogueNode, Choice, CharacterOnStage, Story } from "@/types/story";
 import CharacterSprite from "@/components/reader/CharacterSprite";
 import DialogueBox from "@/components/reader/DialogueBox";
 
+const PANEL_IMAGES: Record<string, string> = {
+  coffee: "/assets/panels/panel_coffee.png",
+  eye: "/assets/panels/panel_eye.png",
+  crane: "/assets/panels/panel_crane.png",
+  rooftop_look: "/assets/bgs/bg_rooftop_night.png",
+};
+
 export default function VNMode({
   story,
   currentNode,
@@ -26,6 +33,11 @@ export default function VNMode({
   const characters = currentNode.characters || [];
   const hasCharacters = characters.length > 0;
 
+  // Resolve cinematic image
+  const cinematicSrc = currentNode.cinematicImage 
+    ? (PANEL_IMAGES[currentNode.cinematicImage] || currentNode.cinematicImage) 
+    : null;
+
   return (
     <div className="flex-1 flex flex-col relative" style={{ minHeight: 0 }}>
 
@@ -46,12 +58,12 @@ export default function VNMode({
             >
               <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.85)" }} />
               
-              {currentNode.cinematicImage && (
+              {cinematicSrc && (
                 <motion.img
                   initial={{ opacity: 0, scale: 1.05 }}
                   animate={{ opacity: 0.5, scale: 1 }}
                   transition={{ duration: 0.8 }}
-                  src={currentNode.cinematicImage}
+                  src={cinematicSrc}
                   alt="Cinematic Panel"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
