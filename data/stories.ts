@@ -869,7 +869,8 @@ export const STORIES: Story[] = [
           },
         ],
       },
-
+    ],
+  },
   {
     id: "paper-hearts",
     title: "Paper Hearts",
