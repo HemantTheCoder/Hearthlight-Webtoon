@@ -9,6 +9,8 @@ const PANEL_IMAGES: Record<string, string> = {
   coffee: "/assets/panels/panel_coffee.png",
   eye: "/assets/panels/panel_eye.png",
   crane: "/assets/panels/panel_crane.png",
+  umbrella: "/assets/panels/panel_umbrella.png",
+  reflection: "/assets/panels/panel_reflection.png",
   rooftop_look: "/assets/bgs/bg_rooftop_night.png",
 };
 
