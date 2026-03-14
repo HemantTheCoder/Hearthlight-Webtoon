@@ -15,13 +15,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"artist" | "reader">("reader");
   const { login } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock login/register by just setting the username
     const displayUser = isLogin ? (email.split("@")[0] || "Reader") : username;
-    login(displayUser);
+    login(displayUser, isLogin ? undefined : role);
     onClose();
   };
 
@@ -141,6 +142,38 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     }}
                   />
                 </div>
+
+                {!isLogin && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    <p className="text-xs text-center mb-1" style={{ color: "rgba(196,181,253,0.5)" }}>
+                      I want to join as:
+                    </p>
+                    <div className="flex gap-2">
+                       <button
+                         type="button"
+                         onClick={() => setRole("reader")}
+                         className={`flex-1 py-3 rounded-2xl text-xs font-bold transition-all border ${
+                           role === "reader" 
+                           ? "bg-purple-500/20 border-purple-500 text-purple-200" 
+                           : "bg-black/20 border-white/5 text-white/40 hover:bg-white/5"
+                         }`}
+                       >
+                         Reader Only 📖
+                       </button>
+                       <button
+                         type="button"
+                         onClick={() => setRole("artist")}
+                         className={`flex-1 py-3 rounded-2xl text-xs font-bold transition-all border ${
+                           role === "artist" 
+                           ? "bg-purple-500/20 border-purple-500 text-purple-200" 
+                           : "bg-black/20 border-white/5 text-white/40 hover:bg-white/5"
+                         }`}
+                       >
+                         Artist + Reader 🎨
+                       </button>
+                    </div>
+                  </div>
+                )}
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}

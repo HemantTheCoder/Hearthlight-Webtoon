@@ -5,11 +5,12 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 interface UserProfile {
   username: string;
   joinedDate: string;
+  role: "artist" | "reader";
 }
 
 interface AuthContextType {
   user: UserProfile | null;
-  login: (username: string) => void;
+  login: (username: string, role?: "artist" | "reader") => void;
   logout: () => void;
 }
 
@@ -30,10 +31,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (username: string) => {
-    const newUser = {
+  const login = (username: string, role: "artist" | "reader" = "reader") => {
+    const newUser: UserProfile = {
       username,
       joinedDate: new Date().toISOString(),
+      role,
     };
     setUser(newUser);
     localStorage.setItem("hearthlight_user", JSON.stringify(newUser));

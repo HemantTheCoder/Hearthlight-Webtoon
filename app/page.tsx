@@ -384,34 +384,51 @@ export default function HomePage() {
           >
             <div className="flex flex-col items-center justify-center pt-20">
               <div 
-                className="w-24 h-24 rounded-full mb-4 flex justify-center items-center text-3xl font-bold"
+                className="w-24 h-24 rounded-full mb-4 flex justify-center items-center text-3xl font-bold relative"
                 style={{
                   background: "linear-gradient(135deg, #7c3aed, #ec4899)",
                   color: "white"
                 }}
               >
                 {user.username.charAt(0).toUpperCase()}
+                <div className="absolute -bottom-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20 bg-black/60 backdrop-blur-md">
+                  {user.role}
+                </div>
               </div>
               <h2 className="text-2xl font-bold mb-1" style={{ color: "white", fontFamily: "'Georgia', serif" }}>
                 {user.username}
               </h2>
-              <p className="text-sm mb-8" style={{ color: "rgba(196,181,253,0.6)" }}>
+              <p className="text-sm mb-6" style={{ color: "rgba(196,181,253,0.6)" }}>
                 Member since {new Date(user.joinedDate).toLocaleDateString()}
               </p>
 
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-3 w-full mb-8">
+                 <div className="bg-white/5 border border-white/5 rounded-2xl p-4 text-center">
+                    <p className="text-xs text-white/30 uppercase font-bold tracking-tighter mb-1">Stories Read</p>
+                    <p className="text-xl font-bold text-white">12</p>
+                 </div>
+                 <div className="bg-white/5 border border-white/5 rounded-2xl p-4 text-center">
+                    <p className="text-xs text-white/30 uppercase font-bold tracking-tighter mb-1">Time Spent</p>
+                    <p className="text-xl font-bold text-white">4.5h</p>
+                 </div>
+              </div>
+
               <div className="flex flex-col gap-3 w-full max-w-[200px] mb-8">
-                <Link
-                  href="/studio"
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold transition-shadow"
-                  style={{
-                    background: "linear-gradient(135deg, #9333ea 0%, #c084fc 100%)",
-                    color: "white",
-                    boxShadow: "0 8px 25px rgba(168, 85, 247, 0.25)",
-                  }}
-                >
-                  <PenTool size={16} />
-                  Creator Studio
-                </Link>
+                {user.role === "artist" && (
+                  <Link
+                    href="/studio"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold transition-shadow"
+                    style={{
+                      background: "linear-gradient(135deg, #9333ea 0%, #c084fc 100%)",
+                      color: "white",
+                      boxShadow: "0 8px 25px rgba(168, 85, 247, 0.25)",
+                    }}
+                  >
+                    <PenTool size={16} />
+                    Creator Studio
+                  </Link>
+                )}
 
                 <button
                   onClick={() => {
