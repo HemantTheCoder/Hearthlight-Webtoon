@@ -456,7 +456,15 @@ export const STORIES: Story[] = [
           {
             id: "n4",
             type: "narration",
-            text: "Your breath catches. You'd know the slope of her shoulders anywhere. It's Aoi. Her gaze is fixed on the tracks, refusing to acknowledge the world around her.",
+            text: "Your breath catches. You'd know the slope of her shoulders anywhere. It's Aoi. And then you see them — the small, gold-pressed earrings you bought her for her eighteenth birthday. She's still wearing them.",
+            background: "train_station",
+            sceneEffect: "rain",
+            next: "n4_3",
+          },
+          {
+            id: "n4_3",
+            type: "narration",
+            text: "The realization hits you harder than the cold. She didn't just move back. She never truly left.",
             background: "train_station",
             sceneEffect: "rain",
             next: "n4_5",
@@ -773,7 +781,7 @@ export const STORIES: Story[] = [
           {
             id: "n9",
             type: "narration",
-            text: "She finally turns, cheeks burning a bright, furious pink. She crosses her arms defensively.",
+            text: "She finally turns, cheeks burning a bright, furious pink. Her ears are red too, though she's trying desperately to hide them behind her hair.",
             background: "classroom",
             characters: [
               { characterId: "hana", expression: "flustered", position: "right", highlighted: true },
@@ -790,6 +798,22 @@ export const STORIES: Story[] = [
             characters: [
               { characterId: "hana", expression: "neutral", position: "right", highlighted: true },
             ],
+            next: "n10_interrupt",
+          },
+          {
+            id: "n10_interrupt",
+            type: "dialogue",
+            speaker: "Teacher",
+            characterId: "teacher", // Generic id
+            text: "Hana! If you're quite finished with your secret meeting, perhaps you could focus on your sketch?",
+            background: "classroom",
+            next: "n10_interrupt2",
+          },
+          {
+            id: "n10_interrupt2",
+            type: "narration",
+            text: "The sharp voice of the art teacher cuts through the air. Hana jumps, her sketchbook nearly sliding off the desk.",
+            background: "classroom",
             next: "n11",
           },
           {
