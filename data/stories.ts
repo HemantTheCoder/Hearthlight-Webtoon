@@ -26,6 +26,12 @@ export const STORIES: Story[] = [
         description: "The protagonist",
         palette: "player",
       },
+      {
+        id: "tanaka",
+        name: "Mr. Tanaka",
+        description: "The Café Manager, gruff but kind-hearted",
+        palette: "tanaka",
+      },
     ],
     chapters: [
       {
@@ -136,10 +142,10 @@ export const STORIES: Story[] = [
           {
             id: "n8",
             type: "narration",
-            text: "She doesn't look up from her book immediately. She traces the edge of the page, her cheeks faintly dusted with pink.",
+            text: "She doesn't look up from her book immediately. She traces the edge of the page, her fingers trembling slightly. The mask of 'cool composure' is slipping.",
             background: "rooftop_night",
             characters: [
-              { characterId: "eleanor", expression: "flustered", position: "center", highlighted: true },
+              { characterId: "eleanor", expression: "shy", position: "center", highlighted: true },
             ],
             next: "n_choice1",
           },
@@ -203,7 +209,7 @@ export const STORIES: Story[] = [
             text: "She finally closes her book, running a finger over the embossed title. She doesn't look at you. She looks at the traffic — a endless river of red and white light.",
             background: "rooftop_night",
             characters: [
-              { characterId: "eleanor", expression: "sad", position: "center", highlighted: true },
+              { characterId: "eleanor", expression: "thinking", position: "center", highlighted: true },
             ],
             next: "n10_2",
           },
@@ -278,10 +284,10 @@ export const STORIES: Story[] = [
           {
             id: "n12_tired",
             type: "narration",
-            text: "She nods slowly, as if mentally cataloguing you. Another unreadable data point in her quiet study of the world.",
+            text: "She nods slowly, her gaze returning to the city. The moment of connection is still there, but she's retreated back into her quiet, lonely world.",
             background: "rooftop_night",
             characters: [
-              { characterId: "eleanor", expression: "sad", position: "center", highlighted: true },
+              { characterId: "eleanor", expression: "neutral", position: "center", highlighted: true },
             ],
             next: "n13",
           },
@@ -325,6 +331,22 @@ export const STORIES: Story[] = [
             characters: [
               { characterId: "eleanor", expression: "flustered", position: "center", highlighted: true },
             ],
+            next: "n15_interrupt",
+          },
+          {
+            id: "n15_interrupt",
+            type: "dialogue",
+            speaker: "Mr. Tanaka",
+            characterId: "tanaka",
+            text: "Oi! You done daydreaming? Espresso machine doesn't clean itself!",
+            background: "rooftop_night",
+            next: "n15_interrupt2",
+          },
+          {
+            id: "n15_interrupt2",
+            type: "narration",
+            text: "The gruff voice of Mr. Tanaka echoes from the stairwell. The magical bubble of the rooftop café pops instantly.",
+            background: "rooftop_night",
             next: "n16_climax",
           },
           {
