@@ -56,13 +56,17 @@ export default function VNMode({
               style={{ zIndex: 6 }}
               onClick={onNext}
             >
-              <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.85)" }} />
+              <div className="absolute inset-0" style={{ background: "rgba(5,2,10,0.88)" }} />
               
               {cinematicSrc && (
                 <motion.img
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 0.5, scale: 1 }}
-                  transition={{ duration: 0.8 }}
+                  initial={{ opacity: 0, scale: 1.15, filter: "brightness(0.5) blur(4px)" }}
+                  animate={{ 
+                    opacity: 0.6, 
+                    scale: 1, 
+                    filter: "brightness(0.7) blur(0px)" 
+                  }}
+                  transition={{ duration: 12, ease: "linear" }}
                   src={cinematicSrc}
                   alt="Cinematic Panel"
                   className="absolute inset-0 w-full h-full object-cover"
@@ -75,35 +79,35 @@ export default function VNMode({
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-xs mb-3 tracking-widest uppercase"
-                    style={{ color: "rgba(196,181,253,0.7)" }}
+                    className="text-[10px] mb-4 tracking-[0.2em] uppercase font-bold"
+                    style={{ color: "rgba(196,181,253,0.9)", textShadow: "0 0 10px rgba(124,58,237,0.5)" }}
                   >
                     {currentNode.webtoonPanel.caption}
                   </motion.p>
                 )}
                 <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-lg leading-relaxed"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="text-xl leading-relaxed"
                   style={{
-                    color: "rgba(255,255,255,0.92)",
+                    color: "#fff",
                     fontFamily: "'Georgia', serif",
                     fontStyle: "italic",
-                    textShadow: "0 2px 16px rgba(0,0,0,0.8)",
+                    textShadow: "0 4px 20px rgba(0,0,0,0.9)",
                   }}
                 >
                   {currentNode.text}
                 </motion.p>
-                <motion.p
+                <motion.div
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1 }}
-                  className="mt-6 text-xs"
-                  style={{ color: "rgba(196,181,253,0.5)" }}
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ delay: 2, duration: 2, repeat: Infinity }}
+                  className="mt-10 flex flex-col items-center gap-2"
                 >
-                  tap to continue
-                </motion.p>
+                  <div className="w-px h-8 bg-gradient-to-b from-purple-400/80 to-transparent" />
+                  <span className="text-[10px] tracking-widest uppercase text-purple-300/60">Continue</span>
+                </motion.div>
               </div>
             </motion.div>
         )}
@@ -111,34 +115,36 @@ export default function VNMode({
         {/* Narration overlay (no character) */}
         {isNarration && !hasCharacters && (
           <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute inset-4 flex items-center justify-center cursor-pointer"
-              style={{ zIndex: 6 }}
+              initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+              animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
+              style={{ zIndex: 6, background: "rgba(10,5,20,0.3)" }}
               onClick={onNext}
             >
               <div
-                className="rounded-2xl px-6 py-5 text-center max-w-xs"
+                className="rounded-3xl px-8 py-7 text-center max-w-sm mx-6 shadow-2xl"
                 style={{
-                  background: "rgba(10,6,20,0.65)",
-                  backdropFilter: "blur(16px)",
-                  border: "1px solid rgba(196,181,253,0.15)",
+                  background: "linear-gradient(145deg, rgba(30,15,50,0.85), rgba(10,5,20,0.95))",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: "0 20px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(196,181,253,0.1)",
                 }}
               >
                 <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "rgba(255,255,255,0.88)", fontStyle: "italic", fontFamily: "'Georgia', serif" }}
+                  className="text-base leading-relaxed"
+                  style={{ 
+                    color: "rgba(255,255,255,0.95)", 
+                    fontStyle: "italic", 
+                    fontFamily: "'Georgia', serif",
+                    letterSpacing: "0.01em" 
+                  }}
                 >
                   {currentNode.text}
                 </p>
-                <motion.p
-                  animate={{ opacity: [0.3, 0.8, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="mt-4 text-xs"
-                  style={{ color: "rgba(196,181,253,0.6)" }}
-                >
-                  tap to continue
-                </motion.p>
+                <div className="mt-6 flex justify-center opacity-30">
+                   <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mx-1 animate-pulse" />
+                   <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mx-1 animate-pulse delay-75" />
+                   <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mx-1 animate-pulse delay-150" />
+                </div>
               </div>
             </motion.div>
         )}

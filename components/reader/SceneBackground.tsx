@@ -23,10 +23,17 @@ export default function SceneBackground({ sceneKey }: SceneBackgroundProps) {
       <AnimatePresence mode="wait">
         <motion.div
           key={bgImage}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 1.1, x: -10 }}
+          animate={{ 
+            opacity: 1, 
+            scale: [1.1, 1.02],
+            x: [-10, 0],
+          }}
           exit={{ opacity: 0, scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
+          transition={{ 
+            duration: 12, // Very slow, cinematic transition
+            ease: "easeOut" 
+          }}
           className="absolute inset-0"
         >
           <Image
@@ -35,10 +42,10 @@ export default function SceneBackground({ sceneKey }: SceneBackgroundProps) {
             fill
             priority
             className="object-cover"
-            style={{ filter: "brightness(0.85) contrast(1.1)" }}
+            style={{ filter: "brightness(0.9) contrast(1.1)" }}
           />
           {/* Subtle cinematic vignette */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
     </div>

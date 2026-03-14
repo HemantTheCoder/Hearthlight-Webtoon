@@ -42,20 +42,34 @@ export default function CharacterSprite({ spriteKey, characterName, mood }: Char
     <AnimatePresence mode="wait">
       <motion.div
         key={imageSrc}
-        initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        initial={{ opacity: 0, y: 20, scale: 0.95, filter: "blur(8px) brightness(0.8)" }}
+        animate={{ 
+          opacity: 1, 
+          y: 0, 
+          scale: 1, 
+          filter: "blur(0px) brightness(1.05)",
+        }}
+        exit={{ opacity: 0, y: 15, scale: 1.02, filter: "blur(8px) brightness(0.8)" }}
+        transition={{ 
+          duration: 0.6, 
+          ease: [0.16, 1, 0.3, 1] // Premium spring-like ease
+        }}
         className="absolute bottom-0 left-0 right-0 flex items-end justify-center pointer-events-none"
-        style={{ zIndex: 10 }} // Ensure character is behind dialogue box but over background
+        style={{ zIndex: 10 }}
       >
-        {/* Breathing motion wrapper */}
+        {/* Secondary motion for depth: Breathing + Slight Float */}
         <motion.div
-          animate={{ y: [0, -4, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-          className="relative"
-          // Adjust height so the waist sits naturally at the bottom
-          style={{ width: "260px", height: "420px" }}
+          animate={{ 
+            y: [0, -6, 0],
+            rotate: [0, 0.5, 0, -0.5, 0]
+          }}
+          transition={{ 
+            duration: 5, 
+            repeat: Infinity, 
+            ease: "easeInOut" 
+          }}
+          className="relative drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+          style={{ width: "280px", height: "460px" }}
         >
           <Image
             src={imageSrc}
@@ -64,11 +78,19 @@ export default function CharacterSprite({ spriteKey, characterName, mood }: Char
             priority
             className="object-contain object-bottom"
             style={{ 
-              // The generated images might have white or checkerboard backgrounds
-              // Using multiply blends white/checkerboard out nicely against dark backgrounds
-              mixBlendMode: "multiply",
-              filter: "contrast(1.1) saturate(1.1)"
+              filter: "contrast(1.05) saturate(1.1) brightness(1.1)",
+              // Removed multiply to maintain sprite integrity. 
+              // Using contrast/brightness to blend instead.
             }}
+          />
+          
+          {/* Subtle rim light overlay for better integration */}
+          <div 
+             className="absolute inset-0 pointer-events-none" 
+             style={{
+               background: "radial-gradient(circle at 50% 20%, rgba(255,255,255,0.1) 0%, transparent 70%)",
+               mixBlendMode: "overlay"
+             }}
           />
         </motion.div>
       </motion.div>

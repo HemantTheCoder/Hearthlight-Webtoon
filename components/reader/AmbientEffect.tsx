@@ -22,50 +22,63 @@ export default function AmbientEffect({ effect }: { effect?: SceneEffect }) {
 
 /* ─── Rain ─── */
 function RainEffect() {
-  const drops = Array.from({ length: 50 }, (_, i) => ({
-    x: (i * 37) % 430,
-    delay: (i * 0.07) % 2,
-    dur: 0.6 + (i % 4) * 0.15,
-    len: 12 + (i % 5) * 4,
-    opacity: 0.2 + (i % 3) * 0.1,
+  const drops = Array.from({ length: 120 }, (_, i) => ({
+    x: (i * 13) % 430,
+    delay: Math.random() * 2,
+    dur: 0.4 + Math.random() * 0.4,
+    len: 15 + Math.random() * 15,
+    opacity: 0.1 + Math.random() * 0.3,
   }));
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 3 }}>
       <svg width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
+        <defs>
+          <linearGradient id="rainGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="100%" stopColor="rgba(200,225,255,0.4)" />
+          </linearGradient>
+        </defs>
         {drops.map((d, i) => (
           <motion.line
             key={i}
             x1={d.x}
             y1={-d.len}
-            x2={d.x - 2}
+            x2={d.x - 1}
             y2={0}
-            stroke="rgba(180,210,255,0.5)"
-            strokeWidth="0.8"
+            stroke="url(#rainGrad)"
+            strokeWidth="1.2"
             animate={{
-              y: [0, "100vh"],
-              opacity: [d.opacity, d.opacity * 0.5, d.opacity],
+              y: [0, "110vh"],
             }}
             transition={{
-              y: { duration: d.dur, repeat: Infinity, delay: d.delay, ease: "linear" },
-              opacity: { duration: d.dur, repeat: Infinity, delay: d.delay },
+              duration: d.dur,
+              repeat: Infinity,
+              delay: d.delay,
+              ease: "linear",
             }}
           />
         ))}
       </svg>
+      {/* Dynamic mist/fog during rain */}
+      <motion.div 
+        animate={{ opacity: [0.1, 0.2, 0.1] }}
+        transition={{ duration: 4, repeat: Infinity }}
+        className="absolute inset-0 bg-blue-900/10 backdrop-blur-[1px]" 
+      />
     </div>
   );
 }
 
 /* ─── Bokeh ─── */
 function BokehEffect() {
-  const orbs = Array.from({ length: 14 }, (_, i) => ({
-    x: (i * 73 + 30) % 400,
-    y: (i * 111 + 50) % 600,
-    size: 8 + (i % 6) * 8,
-    color: i % 3 === 0 ? "#c4b5fd" : i % 3 === 1 ? "#f9a8d4" : "#fcd34d",
-    dur: 4 + (i % 4),
-    delay: i * 0.4,
+  const orbs = Array.from({ length: 20 }, (_, i) => ({
+    x: Math.random() * 450,
+    y: Math.random() * 700,
+    size: 20 + Math.random() * 60,
+    color: i % 3 === 0 ? "rgba(196,181,253,0.3)" : i % 3 === 1 ? "rgba(249,168,212,0.3)" : "rgba(252,211,77,0.3)",
+    dur: 6 + Math.random() * 6,
+    delay: Math.random() * 5,
   }));
 
   return (
@@ -80,12 +93,12 @@ function BokehEffect() {
             width: o.size,
             height: o.size,
             background: o.color,
-            filter: "blur(6px)",
-            opacity: 0,
+            filter: "blur(12px)",
           }}
           animate={{
-            opacity: [0, 0.3, 0.15, 0.3, 0],
-            y: [0, -20, 0],
+            opacity: [0, 0.4, 0],
+            scale: [0.8, 1.2, 0.8],
+            y: [0, -40, 0],
           }}
           transition={{
             duration: o.dur,
@@ -99,19 +112,18 @@ function BokehEffect() {
   );
 }
 
-/* ─── Particles (fireflies) ─── */
+/* ─── Particles (fireflies/floating dust) ─── */
 function ParticlesEffect() {
-  const dots = Array.from({ length: 16 }, (_, i) => ({
-    x: (i * 60 + 20) % 400,
-    y: 400 + (i * 40) % 300,
-    dur: 3 + (i % 5),
-    delay: i * 0.3,
-    dx: (i % 2 === 0 ? 1 : -1) * (5 + (i % 4) * 3),
-    dy: -(8 + i * 3),
+  const dots = Array.from({ length: 30 }, (_, i) => ({
+    x: Math.random() * 430,
+    y: Math.random() * 800,
+    dur: 4 + Math.random() * 6,
+    delay: Math.random() * 4,
+    size: 2 + Math.random() * 3,
   }));
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 2 }}>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 4 }}>
       {dots.map((d, i) => (
         <motion.div
           key={i}
@@ -119,15 +131,16 @@ function ParticlesEffect() {
           style={{
             left: d.x,
             top: d.y,
-            width: 3,
-            height: 3,
-            background: "#f9a8d4",
-            boxShadow: "0 0 6px 2px #f9a8d480",
+            width: d.size,
+            height: d.size,
+            background: "#fcd34d",
+            boxShadow: "0 0 10px 2px rgba(252,211,77,0.6)",
           }}
           animate={{
-            x: [0, d.dx, 0],
-            y: [0, d.dy, 0],
-            opacity: [0, 0.9, 0],
+            x: [0, Math.random() * 40 - 20, 0],
+            y: [0, Math.random() * -60, 0],
+            opacity: [0, 0.8, 0],
+            scale: [0, 1, 0],
           }}
           transition={{
             duration: d.dur,
@@ -143,12 +156,11 @@ function ParticlesEffect() {
 
 /* ─── Snow ─── */
 function SnowEffect() {
-  const flakes = Array.from({ length: 30 }, (_, i) => ({
-    x: (i * 53) % 430,
-    size: 3 + (i % 4),
-    dur: 4 + (i % 5),
-    delay: (i * 0.2) % 3,
-    dx: (i % 2 === 0 ? 1 : -1) * (5 + (i % 3) * 3),
+  const flakes = Array.from({ length: 60 }, (_, i) => ({
+    x: Math.random() * 430,
+    size: 2 + Math.random() * 5,
+    dur: 6 + Math.random() * 6,
+    delay: Math.random() * 5,
   }));
 
   return (
@@ -156,15 +168,17 @@ function SnowEffect() {
       {flakes.map((f, i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full bg-white"
-          style={{ left: f.x, top: -10, width: f.size, height: f.size, opacity: 0.7 }}
+          className="absolute rounded-full bg-white shadow-[0_0_8px_white]"
+          style={{ left: f.x, top: -20, width: f.size, height: f.size }}
           animate={{
-            y: ["0px", "100vh"],
-            x: [0, f.dx, 0],
+            y: ["-5vh", "105vh"],
+            x: [0, Math.random() * 30 - 15, 0],
+            rotate: [0, 360],
           }}
           transition={{
             y: { duration: f.dur, repeat: Infinity, delay: f.delay, ease: "linear" },
             x: { duration: f.dur / 2, repeat: Infinity, delay: f.delay, ease: "easeInOut" },
+            rotate: { duration: f.dur, repeat: Infinity, delay: f.delay, ease: "linear" },
           }}
         />
       ))}
