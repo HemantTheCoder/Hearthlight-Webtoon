@@ -216,6 +216,9 @@ export default function HomePage() {
         )}
 
         {/* All / Filtered Stories */}
+      const comingSoonStories = combinedStories.filter(s => s.isComingSoon);
+
+      return (
         <div className="mb-6">
           <div className="px-5">
             <SectionHeader
@@ -224,11 +227,25 @@ export default function HomePage() {
             />
           </div>
           <div className="flex gap-3 overflow-x-auto px-5 pb-2 no-scrollbar">
-            {filtered.map((story, i) => (
+            {filtered.filter(s => !s.isComingSoon).map((story, i) => (
               <StoryCard key={story.id} story={story} index={i} variant="medium" />
             ))}
           </div>
         </div>
+
+        {/* Coming Soon Stories */}
+        {comingSoonStories.length > 0 && activeGenre === "All" && (
+          <div className="mb-6">
+            <div className="px-5">
+              <SectionHeader title="Coming Soon" icon="⏳" />
+            </div>
+            <div className="flex gap-3 overflow-x-auto px-5 pb-2 no-scrollbar">
+              {comingSoonStories.map((story, i) => (
+                <StoryCard key={story.id} story={story} index={i + 10} variant="medium" />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Continue reading banner */}
         <div className="px-5 mb-6">

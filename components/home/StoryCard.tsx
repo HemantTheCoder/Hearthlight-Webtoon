@@ -36,6 +36,7 @@ export default function StoryCard({ story, index = 0, variant = "medium" }: Stor
   const firstChapter = story.chapters.find((c) => !c.isLocked);
 
   const handleClick = () => {
+    if (story.isComingSoon) return;
     router.push(`/story/${story.id}`);
   };
 
@@ -43,9 +44,10 @@ export default function StoryCard({ story, index = 0, variant = "medium" }: Stor
     return (
       <motion.button
         onClick={handleClick}
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.98 }}
-        className="relative rounded-3xl overflow-hidden text-left w-full"
+        disabled={story.isComingSoon}
+        whileHover={story.isComingSoon ? {} : { scale: 1.01 }}
+        whileTap={story.isComingSoon ? {} : { scale: 0.98 }}
+        className={`relative rounded-3xl overflow-hidden text-left w-full ${story.isComingSoon ? 'cursor-default opacity-90' : ''}`}
         style={{ height: "220px", background: gradient }}
       >
         {story.coverImage ? (
@@ -64,14 +66,24 @@ export default function StoryCard({ story, index = 0, variant = "medium" }: Stor
         {/* Content */}
         <div className="absolute inset-0 p-5 flex flex-col justify-end">
           <div className="flex flex-col gap-1.5">
-            {story.isFeatured && (
-              <span
-                className="text-xs font-medium tracking-widest uppercase self-start px-2.5 py-0.5 rounded-full"
-                style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.9)" }}
-              >
-                Featured
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {story.isFeatured && (
+                <span
+                  className="text-xs font-medium tracking-widest uppercase px-2.5 py-0.5 rounded-full"
+                  style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.9)" }}
+                >
+                  Featured
+                </span>
+              )}
+              {story.isComingSoon && (
+                <span
+                  className="text-xs font-bold tracking-widest uppercase px-2.5 py-0.5 rounded-full"
+                  style={{ background: "rgba(244,114,182,0.6)", color: "white" }}
+                >
+                  Coming Soon
+                </span>
+              )}
+            </div>
             <h2
               className="text-2xl font-bold text-white leading-tight"
               style={{ fontFamily: "'Georgia', serif", textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
@@ -112,9 +124,10 @@ export default function StoryCard({ story, index = 0, variant = "medium" }: Stor
   return (
     <motion.button
       onClick={handleClick}
-      whileHover={{ scale: 1.02, y: -2 }}
-      whileTap={{ scale: 0.97 }}
-      className="relative rounded-2xl overflow-hidden text-left flex-shrink-0"
+      disabled={story.isComingSoon}
+      whileHover={story.isComingSoon ? {} : { scale: 1.02, y: -2 }}
+      whileTap={story.isComingSoon ? {} : { scale: 0.97 }}
+      className={`relative rounded-2xl overflow-hidden text-left flex-shrink-0 ${story.isComingSoon ? 'cursor-default' : ''}`}
       style={{
         width: variant === "medium" ? "148px" : "120px",
         background: gradient,
@@ -138,9 +151,17 @@ export default function StoryCard({ story, index = 0, variant = "medium" }: Stor
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
 
-        {/* NEW / COMPLETE badge */}
+        {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
-          {story.isNew && (
+          {story.isComingSoon && (
+            <span
+              className="text-xs px-2 py-0.5 rounded-full font-bold"
+              style={{ background: "rgba(244,114,182,0.8)", color: "#fff", fontSize: "8px" }}
+            >
+              COMING SOON
+            </span>
+          )}
+          {story.isNew && !story.isComingSoon && (
             <span
               className="text-xs px-2 py-0.5 rounded-full font-semibold"
               style={{ background: "rgba(244,114,182,0.4)", color: "#fce7f3", fontSize: "9px" }}
@@ -148,7 +169,7 @@ export default function StoryCard({ story, index = 0, variant = "medium" }: Stor
               NEW
             </span>
           )}
-          {story.isComplete && (
+          {story.isComplete && !story.isComingSoon && (
             <span
               className="text-xs px-2 py-0.5 rounded-full"
               style={{ background: "rgba(167,139,250,0.3)", color: "#ede9fe", fontSize: "9px" }}

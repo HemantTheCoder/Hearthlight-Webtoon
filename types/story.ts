@@ -86,6 +86,7 @@ export interface Story {
   isComplete: boolean;
   isNew?: boolean;
   isFeatured?: boolean;
+  isComingSoon?: boolean;
   chapters: Chapter[];
   characters: Character[];
 }
