@@ -12,6 +12,8 @@ const PANEL_IMAGES: Record<string, string> = {
   umbrella: "/assets/panels/panel_umbrella.png",
   reflection: "/assets/panels/panel_reflection.png",
   rooftop_look: "/assets/bgs/bg_rooftop_night.png",
+  locker: "/assets/panels/panel_locker.png",
+  letters: "/assets/panels/panel_letters.png",
 };
 
 const SCENE_BG_IMAGE: Record<string, string> = {
@@ -19,6 +21,7 @@ const SCENE_BG_IMAGE: Record<string, string> = {
   train_station: "/assets/bgs/bg_train_station.png",
   train_interior: "/assets/bgs/bg_train_interior.png",
   classroom: "/assets/bgs/bg_classroom.png",
+  park_sunset: "/assets/bgs/bg_park_sunset.png",
 };
 
 export default function VNMode({
