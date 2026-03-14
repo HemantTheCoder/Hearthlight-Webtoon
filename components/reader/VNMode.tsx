@@ -14,6 +14,13 @@ const PANEL_IMAGES: Record<string, string> = {
   rooftop_look: "/assets/bgs/bg_rooftop_night.png",
 };
 
+const SCENE_BG_IMAGE: Record<string, string> = {
+  rooftop_night: "/assets/bgs/bg_rooftop_night.png",
+  train_station: "/assets/bgs/bg_train_station.png",
+  train_interior: "/assets/bgs/bg_train_interior.png",
+  classroom: "/assets/bgs/bg_classroom.png",
+};
+
 export default function VNMode({
   story,
   currentNode,
@@ -49,6 +56,20 @@ export default function VNMode({
         style={{ minHeight: 0 }}
         onClick={isNarration || isPanel ? onNext : undefined}
       >
+        {/* Environmental Background */}
+        {!isPanel && currentNode.background && SCENE_BG_IMAGE[currentNode.background] && (
+          <div className="absolute inset-0 z-0">
+             <motion.img 
+                key={currentNode.background}
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: 0.35, scale: 1 }}
+                src={SCENE_BG_IMAGE[currentNode.background]} 
+                alt="Scene Background" 
+                className="w-full h-full object-cover" 
+             />
+             <div className="absolute inset-0 bg-black/40" />
+          </div>
+        )}
         {/* Panel narration overlay */}
         {isPanel && (
            <motion.div

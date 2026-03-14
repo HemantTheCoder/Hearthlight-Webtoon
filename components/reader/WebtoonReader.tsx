@@ -48,6 +48,13 @@ const SCENE_BG: Record<string, string[]> = {
   classroom: ["#fff8e8", "#ffefd0"],
 };
 
+const SCENE_BG_IMAGE: Record<string, string> = {
+  rooftop_night: "/assets/bgs/bg_rooftop_night.png",
+  train_station: "/assets/bgs/bg_train_station.png",
+  train_interior: "/assets/bgs/bg_train_interior.png",
+  classroom: "/assets/bgs/bg_classroom.png",
+};
+
 function getCharColor(characterId?: string): string {
   if (!characterId) return "#c4b5fd";
   if (characterId === "eleanor") return "#e8a598";
@@ -111,6 +118,12 @@ function WebtoonPanel({ node, panelIndex }: { node: DialogueNode; panelIndex: nu
         borderRadius: isWide ? "0" : "12px",
       }}
     >
+      {/* Background Image (Atmospheric Background) */}
+      {!cinematicImage && bg && SCENE_BG_IMAGE[bg] && (
+        <div className="absolute inset-0 opacity-40">
+           <img src={SCENE_BG_IMAGE[bg]} alt="Background" className="w-full h-full object-cover grayscale-[0.2]" />
+        </div>
+      )}
       {/* Cinematic Image Rendering (Director's Cut) */}
       {cinematicImage ? (
         <motion.div

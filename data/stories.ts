@@ -578,7 +578,7 @@ export const STORIES: Story[] = [
             id: "n10",
             type: "panel",
             text: "You both step onto the crowded train. The doors slide shut, locking you together in a heavy, shared silence.",
-            background: "train_station",
+            background: "train_interior",
             sceneEffect: "rain",
             webtoonPanel: { type: "wide", caption: "Next Stop: Shinjuku" },
             next: "n10_cinematic",
@@ -605,7 +605,7 @@ export const STORIES: Story[] = [
             speaker: "Aoi",
             characterId: "aoi",
             text: "I still have it. The locker at the museum... I never actually opened it.",
-            background: "train_station",
+            background: "train_interior",
             characters: [
               { characterId: "aoi", expression: "sad", position: "center", highlighted: true },
             ],
