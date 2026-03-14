@@ -44,7 +44,7 @@ export interface SceneNode {
   // Image for webtoon panels/cinematics
   cinematicImage?: string;
   webtoonPanel?: {
-    type: "close" | "half" | "wide";
+    type: "close" | "half" | "wide" | "full";
     caption?: string;
   };
   

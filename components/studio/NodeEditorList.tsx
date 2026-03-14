@@ -194,9 +194,12 @@ export default function NodeEditorList({ draft, chapter }: { draft: StudioDraft,
                         type="text" 
                         value={node.webtoonPanel?.caption || ""}
                         onChange={(e) => updateNode(draft.id, chapter.id, node.id, { 
-                          webtoonPanel: { ...(node.webtoonPanel || {}), caption: e.target.value } 
+                          webtoonPanel: { 
+                            type: node.webtoonPanel?.type || "wide", 
+                            caption: e.target.value 
+                          } 
                         })}
-                        placeholder="Optional Caption (e.g. 'Later that night...')"
+                        placeholder="Optional Caption"
                         className="flex-1 bg-black/40 border border-white/5 rounded px-3 py-1.5 text-sm outline-none focus:border-purple-500/50"
                       />
                     </div>
