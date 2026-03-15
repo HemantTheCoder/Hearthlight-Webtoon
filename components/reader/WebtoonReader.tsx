@@ -1,12 +1,21 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { DialogueNode } from "@/types/story";
+import WebtoonTitleCard from "./WebtoonTitleCard";
+import WebtoonComments from "./WebtoonComments";
+import WebtoonFooter from "./WebtoonFooter";
 
 interface WebtoonReaderProps {
   nodes: DialogueNode[];
   currentNodeIndex: number;
   onScrollToChoice: () => void;
+  storyTitle: string;
+  chapterNumber: number;
+  chapterTitle: string;
+  storyId: string;
+  nextChapterId?: string;
 }
 
 const PANEL_IMAGES: Record<string, string> = {
@@ -66,21 +75,31 @@ function getCharColor(characterId?: string): string {
   return "#c4b5fd";
 }
 
-export default function WebtoonReader({ nodes, currentNodeIndex }: WebtoonReaderProps) {
-  const visibleNodes = nodes.slice(0, currentNodeIndex + 1).filter((n) => n.type !== "choice");
+export default function WebtoonReader({ 
+  nodes, 
+  currentNodeIndex,
+  storyTitle,
+  chapterNumber,
+  chapterTitle,
+  storyId,
+  nextChapterId
+}: WebtoonReaderProps) {
+  const visibleNodes = nodes.slice(0, currentNodeIndex + 1).filter((n: DialogueNode) => n.type !== "choice");
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="flex flex-col gap-1 pb-4">
-      {visibleNodes.map((node, index) => (
-        <motion.div
-          key={node.id}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: Math.min(index * 0.04, 0.25) }}
-        >
-          <WebtoonPanel node={node} panelIndex={index} />
-        </motion.div>
-      ))}
+    <div ref={containerRef} className="flex flex-col gap-0 pb-0 bg-[#0f0a1e]">
+      <WebtoonTitleCard 
+        storyTitle={storyTitle}
+        chapterNumber={chapterNumber}
+        chapterTitle={chapterTitle}
+      />
+
+      <div className="flex flex-col gap-1 py-10">
+        {visibleNodes.map((node: DialogueNode, index: number) => (
+          <WebtoonPanelWrapper key={node.id} node={node} index={index} />
+        ))}
+      </div>
 
       {nodes[currentNodeIndex]?.type === "choice" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mx-4 mt-2">
@@ -91,11 +110,34 @@ export default function WebtoonReader({ nodes, currentNodeIndex }: WebtoonReader
               border: "1px dashed rgba(196,181,253,0.4)",
             }}
           >
-            <span className="text-sm" style={{ color: "#7c3aed" }}>A choice awaits...</span>
+            <span className="text-sm" style={{ color: "#a78bfa" }}>A choice awaits...</span>
           </div>
         </motion.div>
       )}
+
+      {nodes[currentNodeIndex]?.id === "chapter_end" && (
+        <>
+          <WebtoonComments />
+          <WebtoonFooter storyId={storyId} nextChapterId={nextChapterId} />
+        </>
+      )}
     </div>
+  );
+}
+
+function WebtoonPanelWrapper({ node, index }: { node: DialogueNode; index: number }) {
+  const ref = useRef(null);
+  
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, scale: 0.98, y: 20 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+    >
+      <WebtoonPanel node={node} panelIndex={index} />
+    </motion.div>
   );
 }
 
@@ -105,6 +147,7 @@ function WebtoonPanel({ node, panelIndex }: { node: DialogueNode; panelIndex: nu
   const bg = node.background;
   const colors = bg ? (SCENE_BG[bg] ?? ["#f5f0ff", "#ede9fe"]) : ["#f5f0ff", "#ede9fe"];
   const isDark = bg ? (SCENE_DARK[bg] ?? false) : false;
+  const effect = node.sceneEffect;
   const isWide = panelType === "wide" || panelType === "full";
   const character = node.characters?.[0];
 
@@ -117,8 +160,9 @@ function WebtoonPanel({ node, panelIndex }: { node: DialogueNode; panelIndex: nu
       style={{
         height,
         background: cinematicImage ? "#000" : `linear-gradient(160deg, ${colors[0]} 0%, ${colors[colors.length - 1]} 100%)`,
-        margin: isWide ? "0" : "0 4px",
-        borderRadius: isWide ? "0" : "12px",
+        margin: isWide ? "0" : "0 8px",
+        borderRadius: isWide ? "0" : "24px",
+        boxShadow: isWide ? "none" : "0 10px 30px rgba(0,0,0,0.2)",
       }}
     >
       {/* Background Image (Atmospheric Background) */}
@@ -175,6 +219,26 @@ function WebtoonPanel({ node, panelIndex }: { node: DialogueNode; panelIndex: nu
             </div>
           )}
         </>
+      )}
+
+      {/* Cinematic Effects Layer */}
+      {effect === "flash" && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0 bg-white z-20"
+        />
+      )}
+      {effect === "bloom" && (
+        <div className="absolute inset-0 z-10 pointer-events-none" style={{ backdropFilter: "blur(4px) brightness(1.2) saturate(1.2)", mixBlendMode: "screen", opacity: 0.3 }} />
+      )}
+      {effect === "shake" && (
+        <motion.div
+          animate={{ x: [-2, 2, -2, 2, 0] }}
+          transition={{ duration: 0.4, repeat: Infinity }}
+          className="absolute inset-0 bg-red-500/10 z-10 pointer-events-none"
+        />
       )}
 
       {/* Content box */}

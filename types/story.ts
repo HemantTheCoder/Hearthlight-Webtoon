@@ -12,7 +12,7 @@ export type CharacterExpression =
 
 export type CharacterPosition = "left" | "center" | "right";
 
-export type SceneEffect = "rain" | "snow" | "bokeh" | "particles" | "none";
+export type SceneEffect = "rain" | "snow" | "bokeh" | "particles" | "none" | "flash" | "bloom" | "shake";
 
 export interface CharacterOnStage {
   characterId: string;       // e.g. "eleanor"
@@ -62,6 +62,9 @@ export interface DialogueNode {
 
   // Cinematic overrides
   cinematicImage?: string;    // e.g., 'coffee', 'eye', 'crane'
+  audio?: string;             // one-off sfx key
+  bgm?: string;               // background music key for this scene
+  backgroundParallax?: number; // scroll speed multiplier for BG
 }
 
 export interface Chapter {

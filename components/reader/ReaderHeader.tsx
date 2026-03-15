@@ -11,6 +11,7 @@ interface ReaderHeaderProps {
   onHistoryOpen: () => void;
   onAudioOpen: () => void;
   onRewindOpen: () => void;
+  scrollProgress?: number;
 }
 
 export default function ReaderHeader({
@@ -20,6 +21,7 @@ export default function ReaderHeader({
   onHistoryOpen,
   onAudioOpen,
   onRewindOpen,
+  scrollProgress = 0,
 }: ReaderHeaderProps) {
   const router = useRouter();
 
@@ -30,11 +32,22 @@ export default function ReaderHeader({
         background:
           mode === "vn"
             ? "rgba(15,10,30,0.7)"
-            : "rgba(255,255,255,0.85)",
-        backdropFilter: "blur(12px)",
-        borderBottom: `1px solid ${mode === "vn" ? "rgba(196,181,253,0.15)" : "rgba(196,181,253,0.3)"}`,
+            : "rgba(10, 6, 20, 0.95)",
+        backdropFilter: "blur(20px)",
+        borderBottom: `1px solid ${mode === "vn" ? "rgba(196,181,253,0.15)" : "rgba(196,181,253,0.08)"}`,
       }}
     >
+      {/* Progress Bar (Webtoon only) */}
+      {mode === "webtoon" && (
+        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white/5">
+          <motion.div 
+            className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+            initial={{ width: 0 }}
+            animate={{ width: `${scrollProgress * 100}%` }}
+            transition={{ type: "spring", bounce: 0, duration: 0.1 }}
+          />
+        </div>
+      )}
       {/* Left: back + title */}
       <div className="flex items-center gap-2 min-w-0">
         <button
@@ -54,7 +67,7 @@ export default function ReaderHeader({
         <span
           className="text-sm font-medium truncate"
           style={{
-            color: mode === "vn" ? "rgba(255,255,255,0.85)" : "#2d1b4e",
+            color: mode === "vn" ? "rgba(255,255,255,0.85)" : "#fff",
             fontFamily: "'Georgia', serif",
             maxWidth: "120px",
           }}
@@ -127,7 +140,7 @@ export default function ReaderHeader({
         >
           <RotateCcw
             size={14}
-            style={{ color: mode === "vn" ? "rgba(255,255,255,0.8)" : "#6b46c1" }}
+            style={{ color: mode === "vn" ? "rgba(255,255,255,0.8)" : "#c4b5fd" }}
           />
         </button>
 
@@ -142,7 +155,7 @@ export default function ReaderHeader({
         >
           <Search
             size={14}
-            style={{ color: mode === "vn" ? "rgba(255,255,255,0.8)" : "#6b46c1" }}
+            style={{ color: mode === "vn" ? "rgba(255,255,255,0.8)" : "#c4b5fd" }}
           />
         </button>
 
@@ -157,7 +170,7 @@ export default function ReaderHeader({
         >
           <Volume2
             size={14}
-            style={{ color: mode === "vn" ? "rgba(255,255,255,0.8)" : "#6b46c1" }}
+            style={{ color: mode === "vn" ? "rgba(255,255,255,0.8)" : "#c4b5fd" }}
           />
         </button>
       </div>

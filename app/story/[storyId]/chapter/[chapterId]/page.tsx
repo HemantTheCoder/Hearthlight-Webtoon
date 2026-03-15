@@ -55,10 +55,18 @@ function ChapterReader({
   const [isAudioOpen, setIsAudioOpen] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [readStartTime] = useState(Date.now());
+  const [scrollProgress, setScrollProgress] = useState(0);
   const webtoonRef = useRef<HTMLDivElement>(null);
 
   const nodes = chapter.nodes;
   const currentNode = nodes[nodeIndex];
+
+  // Scroll tracking
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const progress = scrollTop / (scrollHeight - clientHeight);
+    setScrollProgress(isNaN(progress) ? 0 : progress);
+  };
 
   // Track history
   useEffect(() => {
@@ -173,16 +181,17 @@ function ChapterReader({
           onHistoryOpen={() => setIsHistoryOpen(true)}
           onAudioOpen={() => setIsAudioOpen(true)}
           onRewindOpen={() => setIsRewindOpen(true)}
+          scrollProgress={scrollProgress}
         />
         {/* Chapter strip */}
         <div
           className="px-5 py-1"
           style={{
-            background: mode === "vn" ? "rgba(10,6,20,0.55)" : "rgba(248,245,255,0.85)",
-            backdropFilter: "blur(8px)",
+            background: mode === "vn" ? "rgba(10,6,20,0.55)" : "rgba(10,6,20,0.8)",
+            backdropFilter: "blur(12px)",
           }}
         >
-          <span className="text-xs" style={{ color: mode === "vn" ? "rgba(196,181,253,0.65)" : "#9f7aea" }}>
+          <span className="text-xs" style={{ color: mode === "vn" ? "rgba(196,181,253,0.65)" : "rgba(196,181,253,0.8)" }}>
             Ch.{chapter.number} · {chapter.title}
           </span>
         </div>
@@ -198,17 +207,36 @@ function ChapterReader({
             onChoice={handleChoice}
           />
         ) : (
-          <div ref={webtoonRef} className="flex-1 overflow-y-auto">
-            <WebtoonReader nodes={nodes} currentNodeIndex={nodeIndex} onScrollToChoice={() => {}} />
-            {currentNode?.type !== "choice" && currentNode?.type !== "panel" && (
-              <button onClick={goNext} className="w-full py-4 flex items-center justify-center gap-2 mt-1" style={{ color: "#9f7aea" }}>
-                <span className="text-sm">Tap to continue</span>
-                <span>↓</span>
+          <div ref={webtoonRef} className="flex-1 overflow-y-auto no-scrollbar" onScroll={handleScroll}>
+            <WebtoonReader 
+              nodes={nodes} 
+              currentNodeIndex={nodeIndex} 
+              onScrollToChoice={() => {}} 
+              storyTitle={story.title}
+              chapterNumber={chapter.number}
+              chapterTitle={chapter.title}
+              storyId={story.id}
+              nextChapterId={nextChapter?.id}
+            />
+            {currentNode?.type !== "choice" && currentNode?.type !== "panel" && currentNode?.id !== "chapter_end" && (
+              <button 
+                onClick={goNext} 
+                className="w-full py-12 flex flex-col items-center justify-center gap-3 transition-colors hover:bg-white/5" 
+                style={{ color: "#c4b5fd" }}
+              >
+                <span className="text-xs uppercase tracking-[0.3em] opacity-40">Tap to continue</span>
+                <motion.span 
+                  animate={{ y: [0, 4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="text-lg"
+                >
+                  ↓
+                </motion.span>
               </button>
             )}
-            {currentNode?.type === "panel" && (
-              <button onClick={goNext} className="w-full py-3 flex items-center justify-center" style={{ color: "#9f7aea" }}>
-                <span className="text-sm">Continue ↓</span>
+            {currentNode?.type === "panel" && currentNode?.id !== "chapter_end" && (
+              <button onClick={goNext} className="w-full py-8 flex items-center justify-center" style={{ color: "#c4b5fd" }}>
+                <span className="text-sm font-semibold uppercase tracking-widest opacity-60">Continue ↓</span>
               </button>
             )}
             {currentNode?.type === "choice" && currentNode.choices && (
